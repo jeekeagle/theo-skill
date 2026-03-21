@@ -1,0 +1,50 @@
+{
+  "name": "theo-github",
+  "version": "1.0.0",
+  "description": "GitHub 仓库深度分析工具 - 自动生成学习笔记",
+  "author": "Theo",
+  "parameters": {
+    "github_url": {
+      "type": "string",
+      "required": true,
+      "description": "GitHub 仓库 URL",
+      "pattern": "^https://github\\.com/[^/]+/[^/]+$"
+    },
+    "depth": {
+      "type": "string",
+      "required": false,
+      "default": "standard",
+      "enum": ["quick", "standard", "deep"],
+      "description": "分析深度"
+    },
+    "output_dir": {
+      "type": "string",
+      "required": false,
+      "default": "01 - Notes",
+      "description": "输出目录"
+    },
+    "notes": {
+      "type": "string",
+      "required": false,
+      "default": "",
+      "description": "用户的个人想法和备注，会添加到笔记的'个人笔记'部分"
+    }
+  },
+  "output_format": {
+    "filename_pattern": "{{repo_name}}-github-analysis.md",
+    "frontmatter": {
+      "categories": "[[Literature Notes]]",
+      "type": "article",
+      "status": "saved"
+    }
+  },
+  "workflow": {
+    "steps": [
+      "validate_url",
+      "fetch_repo_metadata",
+      "ai_analysis",
+      "generate_markdown",
+      "save_to_vault"
+    ]
+  }
+}
