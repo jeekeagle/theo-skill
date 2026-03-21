@@ -1,5 +1,5 @@
 ---
-name: theo-github
+name: theo-github-analysis
 description: |
   GitHub 仓库深度分析工具 - 自动获取仓库信息、AI 深度分析、生成符合 Obsidian Vault 规范的学习笔记。
 
