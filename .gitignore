@@ -1,0 +1,24 @@
+# Claude Code 配置文件（不提交到 GitHub）
+.claude.md
+CLAUDE.md
+
+# 依赖
+node_modules/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 日志
+*.log
+
+# 构建产物
+dist/
+build/
