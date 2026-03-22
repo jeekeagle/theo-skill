@@ -20,7 +20,7 @@
     "output_dir": {
       "type": "string",
       "required": false,
-      "default": "01 - Notes",
+      "default": "E:/Theo-Obsidian/LiteSeed-OS/01 - Notes",
       "description": "输出目录"
     },
     "notes": {

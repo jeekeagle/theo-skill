@@ -45,7 +45,7 @@ mcp_servers: []
    - 结构化内容：基础信息、核心价值、使用方法、学习要点
 
 4. **💾 自动归档**
-   - 保存到 `01 - Notes/` 目录
+   - 保存到 `E:\Theo-Obsidian\LiteSeed-OS\01 - Notes\` 目录
    - 自动添加分类标签
    - 文件命名：`{{repo-name}}-github-analysis.md`（符合 Vault 规范，无日期前缀）
 
@@ -76,6 +76,8 @@ mcp_servers: []
 - `deep`：深度分析（+ 代码分析 + 架构图 + 对比）
 
 #### 2. 指定输出位置
+
+默认输出到 `E:\Theo-Obsidian\LiteSeed-OS\01 - Notes\`，如需自定义：
 
 ```
 /theo-github https://github.com/vercel/next.js --output=/custom/path
@@ -154,7 +156,7 @@ created: 2025-03-21
    ↓
 5. 生成结构化 Markdown
    ↓
-6. 自动保存到 Obsidian Vault
+6. 自动保存到 E:\Theo-Obsidian\LiteSeed-OS\01 - Notes\
    ↓
 7. 返回笔记路径
 ```
