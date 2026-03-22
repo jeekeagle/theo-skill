@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theo-github-analysis - GitHub 仓库深度分析工具</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&family=Noto+Sans+SC:wght@400;500;700&family=Oswald:wght@500;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #2a2a2a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px;
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+        }
+
+        .card {
+            width: 1100px;
+            background: #f5f3ed;
+            padding: 60px 70px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.04;
+            pointer-events: none;
+        }
+
+        .header {
+            position: relative;
+            margin-bottom: 40px;
+            z-index: 1;
+        }
+
+        .tag {
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #e63946;
+            margin-bottom: 15px;
+        }
+
+        .main-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 72px;
+            font-weight: 900;
+            line-height: 0.95;
+            margin: 0;
+            color: #0a0a0a;
+            letter-spacing: -0.03em;
+        }
+
+        .subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 20px;
+            font-weight: 500;
+            color: #555;
+            margin-top: 20px;
+            letter-spacing: -0.01em;
+        }
+
+        .accent-bar {
+            height: 6px;
+            background: #e63946;
+            width: 120px;
+            margin: 30px 0;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            position: relative;
+            margin-top: 40px;
+            z-index: 1;
+        }
+
+        .divider-vertical {
+            position: absolute;
+            width: 4px;
+            background: #e63946;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .column {
+            padding: 0 30px;
+        }
+
+        .column-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #0a0a0a;
+            margin-bottom: 20px;
+            letter-spacing: -0.02em;
+        }
+
+        .step-item {
+            margin-bottom: 25px;
+        }
+
+        .step-number {
+            font-family: 'Oswald', sans-serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: #e63946;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .step-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            color: #0a0a0a;
+            margin-bottom: 5px;
+        }
+
+        .step-desc {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            font-size: 15px;
+            line-height: 1.5;
+            color: #555;
+        }
+
+        .feature-list {
+            list-style: none;
+        }
+
+        .feature-list li {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #1a1a1a;
+            padding: 8px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .feature-list li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: #e63946;
+            font-weight: 700;
+        }
+
+        .output-box {
+            background: rgba(0, 0, 0, 0.03);
+            padding: 25px;
+            margin-top: 20px;
+            border-left: 4px solid #e63946;
+        }
+
+        .output-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #e63946;
+            margin-bottom: 15px;
+        }
+
+        .output-text {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #1a1a1a;
+        }
+
+        .footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 4px solid #e63946;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            color: #555;
+            font-style: italic;
+        }
+
+        .footer-brand {
+            font-family: 'Oswald', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: #0a0a0a;
+            letter-spacing: 0.1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="header">
+            <div class="tag">GITHUB ANALYZER</div>
+            <h1 class="main-title">Theo-github-<br>analysis</h1>
+            <div class="subtitle">GitHub 仓库深度分析工具 - AI 驱动的智能洞察</div>
+            <div class="accent-bar"></div>
+        </div>
+
+        <div class="grid-layout">
+            <div class="divider-vertical"></div>
+
+            <!-- 左栏：工作流程 -->
+            <div class="column">
+                <h2 class="column-title">分析流程</h2>
+
+                <div class="step-item">
+                    <div class="step-number">01</div>
+                    <div class="step-title">自动获取信息</div>
+                    <div class="step-desc">从 GitHub API 获取仓库元数据、README、代码统计</div>
+                </div>
+
+                <div class="step-item">
+                    <div class="step-number">02</div>
+                    <div class="step-title">AI 深度分析</div>
+                    <div class="step-desc">使用 Claude 分析代码架构、技术栈、设计模式</div>
+                </div>
+
+                <div class="step-item">
+                    <div class="step-number">03</div>
+                    <div class="step-title">生成学习笔记</div>
+                    <div class="step-desc">输出符合 Obsidian Vault 规范的结构化笔记</div>
+                </div>
+
+                <div class="output-box">
+                    <div class="output-title">输出格式</div>
+                    <div class="output-text">
+                        • Markdown 格式笔记<br>
+                        • 包含代码片段和架构图<br>
+                        • 支持双向链接<br>
+                        • 自动标签分类
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右栏：核心功能 -->
+            <div class="column">
+                <h2 class="column-title">核心能力</h2>
+
+                <div class="step-item">
+                    <div class="step-title">📊 仓库洞察</div>
+                    <ul class="feature-list">
+                        <li>Star/Fork 趋势分析</li>
+                        <li>贡献者活跃度</li>
+                        <li>技术栈识别</li>
+                    </ul>
+                </div>
+
+                <div class="step-item">
+                    <div class="step-title">🔍 代码分析</div>
+                    <ul class="feature-list">
+                        <li>架构设计解读</li>
+                        <li>关键模块说明</li>
+                        <li>最佳实践提取</li>
+                    </ul>
+                </div>
+
+                <div class="step-item">
+                    <div class="step-title">📝 知识沉淀</div>
+                    <ul class="feature-list">
+                        <li>自动生成学习笔记</li>
+                        <li>Obsidian 格式兼容</li>
+                        <li>支持二次编辑</li>
+                    </ul>
+                </div>
+
+                <div class="output-box">
+                    <div class="output-title">适用场景</div>
+                    <div class="output-text">
+                        • 发现优质开源项目<br>
+                        • 学习新技术栈<br>
+                        • 研究竞品架构<br>
+                        • 构建个人知识库
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-text">深度洞察 GitHub 生态，沉淀技术知识</div>
+            <div class="footer-brand">THEO SERIES</div>
+        </div>
+    </div>
+</body>
+</html>

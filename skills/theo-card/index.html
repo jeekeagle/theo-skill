@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theo-card - 内容铸型工具</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&family=Noto+Sans+SC:wght@400;500;700&family=Oswald:wght@500;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #2a2a2a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px;
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+        }
+
+        .card {
+            width: 1000px;
+            background: #f5f3ed;
+            padding: 60px 70px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.04;
+            pointer-events: none;
+        }
+
+        .header {
+            position: relative;
+            margin-bottom: 50px;
+            z-index: 1;
+        }
+
+        .tag {
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #e63946;
+            margin-bottom: 15px;
+        }
+
+        .main-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 82px;
+            font-weight: 900;
+            line-height: 0.95;
+            margin: 0;
+            color: #0a0a0a;
+            letter-spacing: -0.03em;
+        }
+
+        .subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 22px;
+            font-weight: 500;
+            color: #555;
+            margin-top: 20px;
+            letter-spacing: -0.01em;
+        }
+
+        .accent-bar {
+            height: 6px;
+            background: #e63946;
+            width: 140px;
+            margin: 30px 0;
+        }
+
+        .content-section {
+            position: relative;
+            margin-bottom: 40px;
+            z-index: 1;
+        }
+
+        .section-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #0a0a0a;
+            margin-bottom: 20px;
+            letter-spacing: -0.02em;
+        }
+
+        .mold-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .mold-item {
+            background: rgba(230, 57, 70, 0.06);
+            padding: 30px;
+            border-left: 4px solid #e63946;
+        }
+
+        .mold-flag {
+            font-family: 'Oswald', sans-serif;
+            font-size: 48px;
+            font-weight: 700;
+            color: #e63946;
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .mold-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: #0a0a0a;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .mold-desc {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            font-size: 15px;
+            line-height: 1.5;
+            color: #555;
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .feature-list li {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            font-size: 18px;
+            line-height: 1.7;
+            color: #1a1a1a;
+            padding: 10px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .feature-list li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: #e63946;
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .use-cases {
+            background: rgba(0, 0, 0, 0.03);
+            padding: 30px;
+            margin-top: 30px;
+        }
+
+        .use-case-item {
+            display: flex;
+            align-items: baseline;
+            gap: 15px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .use-case-item:last-child {
+            border-bottom: none;
+        }
+
+        .use-case-icon {
+            font-size: 24px;
+        }
+
+        .use-case-text {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            font-size: 17px;
+            color: #1a1a1a;
+        }
+
+        .footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 4px solid #e63946;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            color: #555;
+            font-style: italic;
+        }
+
+        .footer-brand {
+            font-family: 'Oswald', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: #0a0a0a;
+            letter-spacing: 0.1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="header">
+            <div class="tag">CONTENT CASTER</div>
+            <h1 class="main-title">Theo-card</h1>
+            <div class="subtitle">内容铸型工具 - 将文本转化为视觉卡片</div>
+            <div class="accent-bar"></div>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title">三种铸型模式</h2>
+            <div class="mold-grid">
+                <div class="mold-item">
+                    <div class="mold-flag">-l</div>
+                    <div class="mold-name">List 模式</div>
+                    <div class="mold-desc">默认模式，列表展示，适合要点呈现</div>
+                </div>
+                <div class="mold-item">
+                    <div class="mold-flag">-t</div>
+                    <div class="mold-name">Text 模式</div>
+                    <div class="mold-desc">文本聚焦，适合段落阅读</div>
+                </div>
+                <div class="mold-item">
+                    <div class="mold-flag">-c</div>
+                    <div class="mold-name">Card 模式</div>
+                    <div class="mold-desc">卡片布局，适合视觉化展示</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title">核心能力</h2>
+            <ul class="feature-list">
+                <li>将任意文本内容转化为 PNG 视觉卡片</li>
+                <li>智能识别内容结构，自动优化排版</li>
+                <li>支持多种输出格式和样式定制</li>
+                <li>保持 Theo 系列的设计美学</li>
+                <li>一键生成高质量社交媒体配图</li>
+            </ul>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title">使用场景</h2>
+            <div class="use-cases">
+                <div class="use-case-item">
+                    <span class="use-case-icon">📝</span>
+                    <span class="use-case-text">笔记分享 - 将学习笔记转化为精美卡片</span>
+                </div>
+                <div class="use-case-item">
+                    <span class="use-case-icon">💬</span>
+                    <span class="use-case-text">金句提炼 - 突出显示核心观点</span>
+                </div>
+                <div class="use-case-item">
+                    <span class="use-case-icon">📊</span>
+                    <span class="use-case-text">数据可视化 - 清晰呈现关键信息</span>
+                </div>
+                <div class="use-case-item">
+                    <span class="use-case-icon">🎨</span>
+                    <span class="use-case-text">社交媒体 - 快速生成高质量配图</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-text">铸 - 内容转化的艺术</div>
+            <div class="footer-brand">THEO SERIES</div>
+        </div>
+    </div>
+</body>
+</html>
