@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theo-writer - 智能写作协作工具</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&family=Noto+Sans+SC:wght@400;500;700&family=Oswald:wght@500;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #2a2a2a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px;
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+        }
+
+        .card {
+            width: 1050px;
+            background: #f5f3ed;
+            padding: 60px 70px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.04;
+            pointer-events: none;
+        }
+
+        .header {
+            position: relative;
+            margin-bottom: 40px;
+            z-index: 1;
+        }
+
+        .tag {
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #e63946;
+            margin-bottom: 15px;
+        }
+
+        .main-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 82px;
+            font-weight: 900;
+            line-height: 0.95;
+            margin: 0;
+            color: #0a0a0a;
+            letter-spacing: -0.03em;
+        }
+
+        .subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 22px;
+            font-weight: 500;
+            color: #555;
+            margin-top: 20px;
+            letter-spacing: -0.01em;
+        }
+
+        .accent-bar {
+            height: 6px;
+            background: #e63946;
+            width: 140px;
+            margin: 30px 0;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            position: relative;
+            margin-top: 40px;
+            z-index: 1;
+        }
+
+        .divider-vertical {
+            position: absolute;
+            width: 4px;
+            background: #e63946;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .column {
+            padding: 0 30px;
+        }
+
+        .column-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #0a0a0a;
+            margin-bottom: 20px;
+            letter-spacing: -0.02em;
+        }
+
+        .feature-item {
+            margin-bottom: 25px;
+        }
+
+        .feature-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            color: #0a0a0a;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-icon {
+            font-size: 20px;
+        }
+
+        .feature-desc {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            font-size: 15px;
+            line-height: 1.5;
+            color: #555;
+            padding-left: 30px;
+        }
+
+        .workflow-steps {
+            margin-top: 20px;
+        }
+
+        .step {
+            display: flex;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .step:last-child {
+            border-bottom: none;
+        }
+
+        .step-num {
+            font-family: 'Oswald', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: #e63946;
+            min-width: 50px;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: #0a0a0a;
+            margin-bottom: 5px;
+        }
+
+        .step-desc {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .highlight-box {
+            background: rgba(230, 57, 70, 0.06);
+            padding: 25px;
+            margin-top: 20px;
+            border-left: 4px solid #e63946;
+        }
+
+        .highlight-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #e63946;
+            margin-bottom: 10px;
+        }
+
+        .highlight-text {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #1a1a1a;
+        }
+
+        .content-types {
+            margin-top: 25px;
+        }
+
+        .content-tag {
+            display: inline-block;
+            background: rgba(0, 0, 0, 0.03);
+            padding: 8px 15px;
+            margin: 5px 5px 5px 0;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            color: #0a0a0a;
+            border-radius: 4px;
+        }
+
+        .footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 4px solid #e63946;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            color: #555;
+            font-style: italic;
+        }
+
+        .footer-brand {
+            font-family: 'Oswald', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: #0a0a0a;
+            letter-spacing: 0.1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="header">
+            <div class="tag">WRITING COLLABORATOR</div>
+            <h1 class="main-title">Theo-writer</h1>
+            <div class="subtitle">智能写作协作工具 - 从研究到发布的全程指导</div>
+            <div class="accent-bar"></div>
+        </div>
+
+        <div class="grid-layout">
+            <div class="divider-vertical"></div>
+
+            <!-- 左栏：核心功能 -->
+            <div class="column">
+                <h2 class="column-title">七大核心能力</h2>
+
+                <div class="feature-item">
+                    <div class="feature-title">
+                        <span class="feature-icon">📋</span>
+                        协作大纲
+                    </div>
+                    <div class="feature-desc">
+                        帮助将想法构建成连贯的写作大纲
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-title">
+                        <span class="feature-icon">🔍</span>
+                        研究辅助
+                    </div>
+                    <div class="feature-desc">
+                        查找相关信息并添加引用，确保内容可信
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-title">
+                        <span class="feature-icon">🎣</span>
+                        钩子改进
+                    </div>
+                    <div class="feature-desc">
+                        强化开头以吸引注意力，提升阅读率
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-title">
+                        <span class="feature-icon">👁️</span>
+                        分段反馈
+                    </div>
+                    <div class="feature-desc">
+                        在撰写时逐节审查，实时改进质量
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-title">
+                        <span class="feature-icon">🎭</span>
+                        声音保持
+                    </div>
+                    <div class="feature-desc">
+                        维护你的写作风格和语调，不做作
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-title">
+                        <span class="feature-icon">📚</span>
+                        引用管理
+                    </div>
+                    <div class="feature-desc">
+                        正确添加和格式化参考文献，保持专业
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-title">
+                        <span class="feature-icon">🔄</span>
+                        迭代优化
+                    </div>
+                    <div class="feature-desc">
+                        通过多稿持续改进，直至完美
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <div class="highlight-title">独特价值</div>
+                    <div class="highlight-text">
+                        不是独自奋战，而是与 AI 协作。保持你的声音，提升你的写作。
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右栏：工作流程与内容类型 -->
+            <div class="column">
+                <h2 class="column-title">标准写作流程</h2>
+                <div class="workflow-steps">
+                    <div class="step">
+                        <div class="step-num">1</div>
+                        <div class="step-content">
+                            <div class="step-title">创建大纲</div>
+                            <div class="step-desc">协作构建内容结构，规划研究需求</div>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">2</div>
+                        <div class="step-content">
+                            <div class="step-title">深度研究</div>
+                            <div class="step-desc">查找资料，添加引用，确保准确性</div>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">3</div>
+                        <div class="step-content">
+                            <div class="step-title">撰写引言</div>
+                            <div class="step-desc">改进钩子，确保开篇有力</div>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">4</div>
+                        <div class="step-content">
+                            <div class="step-title">分段写作</div>
+                            <div class="step-desc">逐节撰写，获取即时反馈</div>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-num">5</div>
+                        <div class="step-content">
+                            <div class="step-title">最终审查</div>
+                            <div class="step-desc">全面润色，准备发布</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 class="column-title" style="margin-top: 30px;">适用内容类型</h2>
+                <div class="content-types">
+                    <span class="content-tag">博客文章</span>
+                    <span class="content-tag">技术文档</span>
+                    <span class="content-tag">案例研究</span>
+                    <span class="content-tag">思想领导力</span>
+                    <span class="content-tag">教程指南</span>
+                    <span class="content-tag">邮件通讯</span>
+                    <span class="content-tag">演讲内容</span>
+                    <span class="content-tag">课程大纲</span>
+                </div>
+
+                <div class="highlight-box" style="margin-top: 25px;">
+                    <div class="highlight-title">专业提示</div>
+                    <div class="highlight-text">
+                        • 在 VS Code 中工作获得最佳体验<br>
+                        • 一次完成一个章节，获取增量反馈<br>
+                        • 保存不同版本：v1, v2, v3...<br>
+                        • 大声朗读发现笨拙的句子
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-text">让写作变成协作而非独自奋战</div>
+            <div class="footer-brand">THEO SERIES</div>
+        </div>
+    </div>
+</body>
+</html>
