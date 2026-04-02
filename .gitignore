@@ -1,0 +1,17 @@
+# 操作系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE 和编辑器
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 临时文件
+*.tmp
+*.log
+__pycache__/
+*.pyc
