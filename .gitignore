@@ -1,7 +1,13 @@
-# 操作系统文件
-.DS_Store
-Thumbs.db
-desktop.ini
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+*.pyc
 
 # IDE 和编辑器
 .vscode/
@@ -10,8 +16,12 @@ desktop.ini
 *.swo
 *~
 
+# 操作系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
 # 临时文件
 *.tmp
+*.bak
 *.log
-__pycache__/
-*.pyc

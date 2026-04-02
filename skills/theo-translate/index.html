@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theo-translate - 智能翻译工具</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&family=Noto+Sans+SC:wght@400;500;700&family=Oswald:wght@500;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #2a2a2a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px;
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+        }
+
+        .card {
+            width: 1050px;
+            background: #f5f3ed;
+            padding: 60px 70px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.04;
+            pointer-events: none;
+        }
+
+        .header {
+            position: relative;
+            margin-bottom: 40px;
+            z-index: 1;
+        }
+
+        .tag {
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #e63946;
+            margin-bottom: 15px;
+        }
+
+        .main-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 76px;
+            font-weight: 900;
+            line-height: 0.95;
+            margin: 0;
+            color: #0a0a0a;
+            letter-spacing: -0.03em;
+        }
+
+        .subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 20px;
+            font-weight: 500;
+            color: #555;
+            margin-top: 20px;
+            letter-spacing: -0.01em;
+        }
+
+        .accent-bar {
+            height: 6px;
+            background: #e63946;
+            width: 120px;
+            margin: 30px 0;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            position: relative;
+            margin-top: 40px;
+            z-index: 1;
+        }
+
+        .divider-vertical {
+            position: absolute;
+            width: 4px;
+            background: #e63946;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .column {
+            padding: 0 30px;
+        }
+
+        .column-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #0a0a0a;
+            margin-bottom: 20px;
+            letter-spacing: -0.02em;
+        }
+
+        .feature-item {
+            margin-bottom: 25px;
+        }
+
+        .feature-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            color: #0a0a0a;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-icon {
+            font-size: 20px;
+        }
+
+        .feature-desc {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            font-size: 15px;
+            line-height: 1.5;
+            color: #555;
+            padding-left: 30px;
+        }
+
+        .capability-list {
+            list-style: none;
+        }
+
+        .capability-list li {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #1a1a1a;
+            padding: 8px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .capability-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #e63946;
+            font-weight: 700;
+        }
+
+        .highlight-box {
+            background: rgba(230, 57, 70, 0.06);
+            padding: 25px;
+            margin-top: 20px;
+            border-left: 4px solid #e63946;
+        }
+
+        .highlight-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #e63946;
+            margin-bottom: 10px;
+        }
+
+        .highlight-text {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #1a1a1a;
+        }
+
+        .workflow {
+            margin-top: 25px;
+        }
+
+        .workflow-step {
+            display: flex;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .workflow-step:last-child {
+            border-bottom: none;
+        }
+
+        .step-num {
+            font-family: 'Oswald', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #e63946;
+            min-width: 40px;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: #0a0a0a;
+            margin-bottom: 3px;
+        }
+
+        .step-desc {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 4px solid #e63946;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            color: #555;
+            font-style: italic;
+        }
+
+        .footer-brand {
+            font-family: 'Oswald', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: #0a0a0a;
+            letter-spacing: 0.1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="header">
+            <div class="tag">INTELLIGENT TRANSLATOR</div>
+            <h1 class="main-title">Theo-translate</h1>
+            <div class="subtitle">分析后翻译 - 专业文档本地化解决方案</div>
+            <div class="accent-bar"></div>
+        </div>
+
+        <div class="grid-layout">
+            <div class="divider-vertical"></div>
+
+            <!-- 左栏：核心特性 -->
+            <div class="column">
+                <h2 class="column-title">核心特性</h2>
+
+                <div class="feature-item">
+                    <div class="feature-title">
+                        <span class="feature-icon">🔍</span>
+                        分析后翻译
+                    </div>
+                    <div class="feature-desc">
+                        先理解上下文再翻译，确保准确传达原意
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-title">
+                        <span class="feature-icon">📚</span>
+                        自定义术语表
+                    </div>
+                    <div class="feature-desc">
+                        支持导入专业术语表，确保行业术语一致性
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-title">
+                        <span class="feature-icon">✂️</span>
+                        智能分块
+                    </div>
+                    <div class="feature-desc">
+                        长文档自动分块处理，保持上下文连贯性
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-title">
+                        <span class="feature-icon">⚡</span>
+                        并行翻译
+                    </div>
+                    <div class="feature-desc">
+                        子代理并行处理，大幅提升翻译速度
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <div class="highlight-title">翻译质量</div>
+                    <div class="highlight-text">
+                        保留原文格式、代码块、链接等结构，输出可直接使用的译文
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右栏：应用场景与流程 -->
+            <div class="column">
+                <h2 class="column-title">应用场景</h2>
+                <ul class="capability-list">
+                    <li>技术文档翻译</li>
+                    <li>学术论文本地化</li>
+                    <li>博客文章翻译</li>
+                    <li>API 文档翻译</li>
+                    <li>用户界面文案</li>
+                    <li>开源项目汉化</li>
+                </ul>
+
+                <h2 class="column-title" style="margin-top: 30px;">翻译流程</h2>
+                <div class="workflow">
+                    <div class="workflow-step">
+                        <div class="step-num">1</div>
+                        <div class="step-content">
+                            <div class="step-title">内容分析</div>
+                            <div class="step-desc">识别文档结构、术语、上下文</div>
+                        </div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="step-num">2</div>
+                        <div class="step-content">
+                            <div class="step-title">术语匹配</div>
+                            <div class="step-desc">查询术语表，统一专业表达</div>
+                        </div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="step-num">3</div>
+                        <div class="step-content">
+                            <div class="step-title">并行翻译</div>
+                            <div class="step-desc">分块并行处理，保持连贯性</div>
+                        </div>
+                    </div>
+                    <div class="workflow-step">
+                        <div class="step-num">4</div>
+                        <div class="step-content">
+                            <div class="step-title">质量校对</div>
+                            <div class="step-desc">自动检查术语一致性和格式</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box" style="margin-top: 25px;">
+                    <div class="highlight-title">输出格式</div>
+                    <div class="highlight-text">
+                        Markdown、HTML、纯文本 - 保持原文结构完整
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-text">打破语言壁垒，让知识无国界</div>
+            <div class="footer-brand">THEO SERIES</div>
+        </div>
+    </div>
+</body>
+</html>

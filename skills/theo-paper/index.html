@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theo-paper - 论文阅读工具</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&family=Noto+Sans+SC:wght@400;500;700&family=Oswald:wght@500;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #2a2a2a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px;
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+        }
+
+        .card {
+            width: 1000px;
+            background: #f5f3ed;
+            padding: 60px 70px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.04;
+            pointer-events: none;
+        }
+
+        .header {
+            position: relative;
+            margin-bottom: 50px;
+            z-index: 1;
+        }
+
+        .tag {
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #e63946;
+            margin-bottom: 15px;
+        }
+
+        .main-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 88px;
+            font-weight: 900;
+            line-height: 0.95;
+            margin: 0;
+            color: #0a0a0a;
+            letter-spacing: -0.03em;
+        }
+
+        .subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 22px;
+            font-weight: 500;
+            color: #555;
+            margin-top: 20px;
+            letter-spacing: -0.01em;
+        }
+
+        .accent-bar {
+            height: 6px;
+            background: #e63946;
+            width: 140px;
+            margin: 30px 0;
+        }
+
+        .quote-box {
+            position: relative;
+            background: rgba(230, 57, 70, 0.06);
+            padding: 40px;
+            margin-bottom: 40px;
+            border-left: 4px solid #e63946;
+            z-index: 1;
+        }
+
+        .quote-text {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 26px;
+            font-weight: 700;
+            line-height: 1.5;
+            color: #0a0a0a;
+            font-style: italic;
+        }
+
+        .content-section {
+            position: relative;
+            margin-bottom: 40px;
+            z-index: 1;
+        }
+
+        .section-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #0a0a0a;
+            margin-bottom: 20px;
+            letter-spacing: -0.02em;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .feature-item {
+            background: rgba(0, 0, 0, 0.03);
+            padding: 25px;
+        }
+
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .feature-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: #0a0a0a;
+            margin-bottom: 8px;
+        }
+
+        .feature-desc {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            font-size: 15px;
+            line-height: 1.5;
+            color: #555;
+        }
+
+        .workflow-steps {
+            margin-top: 30px;
+        }
+
+        .step {
+            display: flex;
+            gap: 20px;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .step:last-child {
+            border-bottom: none;
+        }
+
+        .step-number {
+            font-family: 'Oswald', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: #e63946;
+            min-width: 50px;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-family: 'Inter', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: #0a0a0a;
+            margin-bottom: 5px;
+        }
+
+        .step-desc {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+            font-size: 15px;
+            line-height: 1.5;
+            color: #555;
+        }
+
+        .footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 4px solid #e63946;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            color: #555;
+            font-style: italic;
+        }
+
+        .footer-brand {
+            font-family: 'Oswald', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: #0a0a0a;
+            letter-spacing: 0.1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="header">
+            <div class="tag">PAPER READER</div>
+            <h1 class="main-title">Theo-paper</h1>
+            <div class="subtitle">非学术党的论文阅读助手 - 让学术研究触手可及</div>
+            <div class="accent-bar"></div>
+        </div>
+
+        <div class="quote-box">
+            <div class="quote-text">
+                "Takes a paper and extracts its ideas for personal understanding and note-taking."
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title">核心价值</h2>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">🎯</div>
+                    <div class="feature-title">提取核心思想</div>
+                    <div class="feature-desc">剥离学术术语，直击论文核心观点和创新点</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">🧠</div>
+                    <div class="feature-title">个人化理解</div>
+                    <div class="feature-desc">用通俗语言重述，形成自己的知识体系</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">📝</div>
+                    <div class="feature-title">结构化笔记</div>
+                    <div class="feature-desc">自动生成易读的笔记格式，便于后续查阅</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">⚡</div>
+                    <div class="feature-title">高效阅读</div>
+                    <div class="feature-desc">跳过冗长论证，快速获取关键信息</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2 class="section-title">阅读流程</h2>
+            <div class="workflow-steps">
+                <div class="step">
+                    <div class="step-number">01</div>
+                    <div class="step-content">
+                        <div class="step-title">输入论文</div>
+                        <div class="step-desc">支持 PDF 文件、arXiv 链接或论文标题</div>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">02</div>
+                    <div class="step-content">
+                        <div class="step-title">AI 分析提取</div>
+                        <div class="step-desc">自动识别研究问题、方法、结果和结论</div>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">03</div>
+                    <div class="step-content">
+                        <div class="step-title">生成理解笔记</div>
+                        <div class="step-desc">输出个人化的学习笔记，包含关键见解</div>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">04</div>
+                    <div class="step-content">
+                        <div class="step-title">知识沉淀</div>
+                        <div class="step-desc">保存到个人知识库，支持检索和链接</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-text">让每个人都能轻松理解学术研究</div>
+            <div class="footer-brand">THEO SERIES</div>
+        </div>
+    </div>
+</body>
+</html>

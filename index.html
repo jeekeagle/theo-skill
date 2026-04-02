@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theo Skills - 专业工具集</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #141414;
+            --bg-card: #1a1a1a;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --accent: #e63946;
+            --accent-hover: #ff4d5a;
+            --border: #2a2a2a;
+            --success: #10b981;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* 背景网格 */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        header {
+            padding: 60px 0 40px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 48px;
+            font-weight: 900;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .tagline {
+            font-size: 18px;
+            color: var(--text-secondary);
+            font-weight: 300;
+            max-width: 600px;
+        }
+
+        /* Stats */
+        .stats {
+            display: flex;
+            gap: 60px;
+            padding: 40px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+        }
+
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        /* Skills Grid */
+        .skills-section {
+            padding: 60px 0;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            font-weight: 600;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 24px;
+        }
+
+        /* Skill Card */
+        .skill-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(230, 57, 70, 0.1) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .skill-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .skill-card:hover::before {
+            opacity: 1;
+        }
+
+        .skill-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--accent);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .skill-name {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .skill-description {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .skill-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            position: relative;
+        }
+
+        .skill-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .skill-meta-item::before {
+            content: '';
+            width: 4px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        .view-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            position: relative;
+        }
+
+        .view-btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 100px 0;
+            color: var(--text-secondary);
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 20px;
+            }
+
+            .logo {
+                font-size: 36px;
+            }
+
+            .stats {
+                flex-direction: column;
+                gap: 24px;
+            }
+
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .skill-card {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .skill-card:nth-child(1) { animation-delay: 0.1s; }
+        .skill-card:nth-child(2) { animation-delay: 0.2s; }
+        .skill-card:nth-child(3) { animation-delay: 0.3s; }
+        .skill-card:nth-child(4) { animation-delay: 0.4s; }
+        .skill-card:nth-child(5) { animation-delay: 0.5s; }
+        .skill-card:nth-child(6) { animation-delay: 0.6s; }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+
+    <div class="container">
+        <header>
+            <div class="logo">Theo<span>Skills</span></div>
+            <div class="tagline">专业工具集 | 精心设计的 Claude Code 技能生态</div>
+        </header>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="skillCount">-</div>
+                <div class="stat-label">技能总数</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="categoryCount">-</div>
+                <div class="stat-label">分类数量</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="updateDate">-</div>
+                <div class="stat-label">最后更新</div>
+            </div>
+        </div>
+
+        <div class="skills-section">
+            <div class="section-header">
+                <div class="section-title">Available Skills</div>
+            </div>
+            <div class="skills-grid" id="skillsGrid">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <div>加载技能列表...</div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>TheoSkills — 精心设计的 Claude Code 技能生态</p>
+            <p style="margin-top: 8px;">
+                <a href="https://github.com/jeekeagle/theo-skill" target="_blank">GitHub</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // 技能元数据（手动配置，用于扩展）
+        const skillsMetadata = {
+            'theo-infocard': {
+                name: 'Theo-infocard',
+                description: '高级信息卡视觉设计工具 - 将复杂信息转化为具有现代杂志质感的 HTML 信息卡',
+                category: '设计工具',
+                icon: '🎨',
+                version: '1.0.0'
+            },
+            'theo-card': {
+                name: 'Theo-card',
+                description: '内容铸型工具 - 将文本内容转化为 PNG 视觉卡片，支持三种模式',
+                category: '内容创作',
+                icon: '📇',
+                version: '1.0.0'
+            },
+            'theo-github-analysis': {
+                name: 'Theo-github-analysis',
+                description: 'GitHub 仓库深度分析工具 - AI 驱动的智能洞察，自动生成学习笔记',
+                category: '开发工具',
+                icon: '🔍',
+                version: '1.0.0'
+            },
+            'theo-paper': {
+                name: 'Theo-paper',
+                description: '论文阅读工具 - 非学术党的论文阅读助手，提取核心思想',
+                category: '学习工具',
+                icon: '📄',
+                version: '1.0.0'
+            },
+            'theo-translate': {
+                name: 'Theo-translate',
+                description: '智能翻译工具 - 分析后翻译，支持术语表和并行处理',
+                category: '翻译工具',
+                icon: '🌐',
+                version: '1.0.0'
+            },
+            'theo-writer': {
+                name: 'Theo-writer',
+                description: '智能写作协作工具 - 从研究、大纲、起草到润色，提供全程写作指导',
+                category: '写作工具',
+                icon: '✍️',
+                version: '1.0.0'
+            }
+        };
+
+        // 自动扫描技能目录
+        async function loadSkills() {
+            const skillsGrid = document.getElementById('skillsGrid');
+            const skillCountEl = document.getElementById('skillCount');
+
+            try {
+                // 扫描 skills 目录
+                const skills = [];
+
+                // 遍历元数据中的技能
+                for (const [slug, metadata] of Object.entries(skillsMetadata)) {
+                    skills.push({
+                        slug,
+                        ...metadata
+                    });
+                }
+
+                // 更新统计
+                skillCountEl.textContent = skills.length;
+                document.getElementById('categoryCount').textContent = [...new Set(skills.map(s => s.category))].length;
+                document.getElementById('updateDate').textContent = new Date().toLocaleDateString('zh-CN');
+
+                // 渲染技能卡片
+                if (skills.length === 0) {
+                    skillsGrid.innerHTML = '<div class="loading">暂无技能</div>';
+                    return;
+                }
+
+                skillsGrid.innerHTML = skills.map(skill => `
+                    <div class="skill-card" onclick="window.location.href='skills/${skill.slug}/index.html'">
+                        <div class="skill-icon">${skill.icon}</div>
+                        <div class="skill-name">${skill.name}</div>
+                        <div class="skill-description">${skill.description}</div>
+                        <div class="skill-meta">
+                            <span class="skill-meta-item">${skill.category}</span>
+                            <span class="skill-meta-item">v${skill.version}</span>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error('加载失败:', error);
+                skillsGrid.innerHTML = '<div class="loading">加载失败，请刷新页面重试</div>';
+            }
+        }
+
+        // 页面加载时执行
+        document.addEventListener('DOMContentLoaded', loadSkills);
+    </script>
+</body>
+</html>
